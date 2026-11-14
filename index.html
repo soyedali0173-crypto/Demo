@@ -1,0 +1,116 @@
+
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cyber Security Demo</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #eef2f7;
+}
+
+.top {
+  background: #172554;
+  color: white;
+  text-align: center;
+  padding: 12px;
+}
+
+.banner {
+  background: linear-gradient(135deg,#075985,#2563eb);
+  color: white;
+  text-align: center;
+  padding: 35px 15px;
+}
+
+.card {
+  background: white;
+  max-width: 420px;
+  margin: 25px auto;
+  padding: 25px;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0 3px 15px #0002;
+}
+
+.offer {
+  font-size: 42px;
+  font-weight: bold;
+  color: #087b45;
+  margin: 20px;
+}
+
+button {
+  width: 100%;
+  padding: 14px;
+  border: 0;
+  border-radius: 8px;
+  background: #1877f2;
+  color: white;
+  font-size: 17px;
+  cursor: pointer;
+}
+
+.notice {
+  background: #fff4ce;
+  padding: 12px;
+  border-radius: 8px;
+  margin-top: 18px;
+  font-size: 13px;
+}
+
+#result {
+  margin-top: 15px;
+  color: #087b45;
+}
+</style>
+</head>
+
+<body>
+
+<div class="top">
+  CYBER SECURITY EDUCATIONAL DEMO
+</div>
+
+<div class="banner">
+  <h1>১৬ ডিসেম্বর বিশেষ অফার</h1>
+  <p>কাল্পনিক শিক্ষামূলক অফার</p>
+</div>
+
+<div class="card">
+  <h2>বিশেষ ডেটা অফার</h2>
+
+  <div class="offer">60 GB</div>
+
+  <p>এটি ওয়েব ডিজাইন শেখার
+  একটি পরীক্ষামূলক প্রজেক্ট।</p>
+
+  <button onclick="startDemo()">
+    ডেমো পরীক্ষা করুন
+  </button>
+
+  <div id="result"></div>
+
+  <div class="notice">
+    ⚠️ এটি বাস্তব কোনো অফার নয়।
+    কোনো ব্যক্তিগত তথ্য সংগ্রহ করা হয় না।
+  </div>
+</div>
+
+<script>
+function startDemo() {
+  document.getElementById("result").textContent =
+    "ডেমো সফলভাবে কাজ করছে!";
+  
+  console.log("Cyber Security Demo Started");
+}
+</script>
+
+</body>
+</html>
