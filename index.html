@@ -4,57 +4,73 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cyber Security Demo</title>
+<title>Cyber Security OTP Demo</title>
 
 <style>
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
 body {
   margin: 0;
   font-family: Arial, sans-serif;
   background: #eef2f7;
+  color: #222;
 }
 
-.top {
+.header {
   background: #172554;
   color: white;
   text-align: center;
-  padding: 12px;
+  padding: 14px;
+  font-size: 14px;
 }
 
 .banner {
   background: linear-gradient(135deg,#075985,#2563eb);
   color: white;
   text-align: center;
-  padding: 35px 15px;
+  padding: 30px 15px;
+}
+
+.container {
+  max-width: 430px;
+  margin: 25px auto;
+  padding: 15px;
 }
 
 .card {
   background: white;
-  max-width: 420px;
-  margin: 25px auto;
   padding: 25px;
   border-radius: 15px;
   text-align: center;
   box-shadow: 0 3px 15px #0002;
 }
 
-.offer {
-  font-size: 42px;
-  font-weight: bold;
-  color: #087b45;
-  margin: 20px;
+input {
+  width: 100%;
+  padding: 14px;
+  margin: 10px 0;
+  border: 1px solid #bbb;
+  border-radius: 8px;
+  font-size: 17px;
+  text-align: center;
 }
 
 button {
   width: 100%;
   padding: 14px;
-  border: 0;
+  border: none;
   border-radius: 8px;
   background: #1877f2;
   color: white;
   font-size: 17px;
+  margin-top: 10px;
   cursor: pointer;
+}
+
+button:disabled {
+  opacity: .6;
 }
 
 .notice {
@@ -65,50 +81,153 @@ button {
   font-size: 13px;
 }
 
-#result {
+.demo-code {
+  background: #e8f5e9;
+  padding: 15px;
+  border-radius: 8px;
   margin-top: 15px;
   color: #087b45;
+}
+
+#otpSection {
+  display: none;
+}
+
+#result {
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+footer {
+  text-align: center;
+  font-size: 12px;
+  color: #666;
+  padding: 20px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="top">
+<div class="header">
   CYBER SECURITY EDUCATIONAL DEMO
 </div>
 
 <div class="banner">
   <h1>১৬ ডিসেম্বর বিশেষ অফার</h1>
   <p>কাল্পনিক শিক্ষামূলক অফার</p>
+  <h1>60 GB</h1>
 </div>
 
-<div class="card">
-  <h2>বিশেষ ডেটা অফার</h2>
+<div class="container">
+  <div class="card">
 
-  <div class="offer">60 GB</div>
+    <div id="phoneSection">
+      <h2>Demo Verification</h2>
+      <p>একটি কাল্পনিক নম্বর লিখুন</p>
 
-  <p>এটি ওয়েব ডিজাইন শেখার
-  একটি পরীক্ষামূলক প্রজেক্ট।</p>
+      <input
+        id="phone"
+        type="tel"
+        placeholder="017XXXXXXXX"
+        maxlength="11"
+      >
 
-  <button onclick="startDemo()">
-    ডেমো পরীক্ষা করুন
-  </button>
+      <button onclick="generateDemoOTP()">
+        Demo OTP তৈরি করুন
+      </button>
+    </div>
 
-  <div id="result"></div>
+    <div id="otpSection">
+      <h2>OTP Verification</h2>
 
-  <div class="notice">
-    ⚠️ এটি বাস্তব কোনো অফার নয়।
-    কোনো ব্যক্তিগত তথ্য সংগ্রহ করা হয় না।
+      <p>নিচের Demo OTP-টি লিখুন</p>
+
+      <div class="demo-code">
+        Demo OTP:
+        <strong id="demoCode"></strong>
+      </div>
+
+      <input
+        id="otpInput"
+        type="text"
+        inputmode="numeric"
+        maxlength="6"
+        placeholder="৬ ডিজিটের OTP"
+      >
+
+      <button onclick="verifyDemoOTP()">
+        Verify OTP
+      </button>
+    </div>
+
+    <div id="result"></div>
+
+    <div class="notice">
+      ⚠️ এটি শুধুমাত্র Cyber Security
+      শিক্ষার জন্য তৈরি ডেমো।
+      কোনো আসল SMS, ফোন নম্বর বা
+      ব্যক্তিগত তথ্য সংগ্রহ করা হয় না।
+    </div>
+
   </div>
 </div>
 
+<footer>
+  Educational Project | Local Demo Only
+</footer>
+
 <script>
-function startDemo() {
-  document.getElementById("result").textContent =
-    "ডেমো সফলভাবে কাজ করছে!";
-  
-  console.log("Cyber Security Demo Started");
+let currentOTP = "";
+
+function generateDemoOTP() {
+
+  const phone = document.getElementById("phone").value;
+
+  if (!/^01[3-9]\d{8}$/.test(phone)) {
+    document.getElementById("result").textContent =
+      "ডেমোর জন্য ১১ সংখ্যার নম্বরের ফরম্যাট দিন।";
+    return;
+  }
+
+  // Generate a fictional six-digit OTP
+  currentOTP = String(
+    Math.floor(100000 + Math.random() * 900000)
+  );
+
+  document.getElementById("demoCode").textContent =
+    currentOTP;
+
+  document.getElementById("phoneSection").style.display =
+    "none";
+
+  document.getElementById("otpSection").style.display =
+    "block";
+
+  document.getElementById("result").textContent = "";
+}
+
+function verifyDemoOTP() {
+
+  const enteredOTP =
+    document.getElementById("otpInput").value;
+
+  if (enteredOTP === currentOTP) {
+
+    document.getElementById("result").textContent =
+      "Verification Successful! Demo সম্পন্ন হয়েছে।";
+
+    document.getElementById("result").style.color =
+      "green";
+
+  } else {
+
+    document.getElementById("result").textContent =
+      "ভুল OTP! আবার চেষ্টা করুন।";
+
+    document.getElementById("result").style.color =
+      "red";
+  }
 }
 </script>
 
